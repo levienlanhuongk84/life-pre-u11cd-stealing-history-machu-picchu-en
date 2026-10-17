@@ -1174,6 +1174,18 @@ html[lang="vi"] #review .sample.why1::before { content: "Vì sao? "; }
 .rl-src .opt-box p { margin: 4px 0; padding: 0; border: 0; }
 .rl-src .opt-box b.ol { display: inline-block; min-width: 1.6em; color: var(--purple-ink); font-family: var(--font-mono); }
 @media (max-width: 640px) { .mcq.vis .opts { grid-template-columns: 1fr; } .mcq.vis .opts.chips { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+/* Teacher 17/10/2026 (same as Unit 11a–11b): phones and tablets keep passage | questions side by side, each pane scrolls on
+   its own; the question stem stays pinned under the palette while the learner reads its six options; the player is pinned */
+@media (max-width: 900px) {
+  .mcq.vis .opts, .mcq.vis .opts.chips { grid-template-columns: minmax(0, 1fr); }
+  .ex.rl.cols .rl-q .mcq.vis .stem { position: sticky; top: var(--palh, 34px); z-index: 2; background: var(--surface); padding: 4px 2px 6px; margin: -2px 0 2px; border-bottom: 1px solid var(--line); }
+  .ex.rl.cols .mcq.vis .opts label { padding: 4px 6px; gap: 6px; border-color: var(--line); margin-bottom: 3px; border-radius: 8px; }
+  .ex.rl.cols .mcq.vis .opts input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .ex.rl.cols .mcq.vis .opts label:has(input:checked) .o { background: var(--purple); color: #fff; }
+  .ex.rl.cols .mcq.vis .opts .o { flex: none; display: inline-grid; place-items: center; min-width: 1.5em; height: 1.5em; border-radius: 50%; background: var(--purple-soft); color: var(--purple-ink); font-weight: 700; margin-right: 4px; }
+  .ex.rl.cols .rl-src .rec .lst { position: sticky; top: 0; z-index: 2; background: var(--surface); }
+  .ex.rl.cols .rl-src .p-title { position: sticky; top: 0; z-index: 1; background: var(--bg); margin: 0 0 6px; padding: 4px 0; }
+}
 
 /* Unit 11c–11d · Sheet 5 (rl_build.py, Agent B): the SB glossary line under 'Stealing history' */
 .rl-src .gloss { margin: 10px 0 0; padding-top: 8px; border-top: 1px dashed var(--line); font-size: .9em; color: var(--ink-2); }
@@ -3824,8 +3836,10 @@ html[lang="vi"] #writing .sample.why1::before, html[lang="vi"] #action .sample.w
 })();
 
 (function () {
-  if (!window.matchMedia('(max-width: 640px)').matches) return;
-  document.querySelectorAll('.ex.rl.cols').forEach(ex => { ex.classList.remove('cols'); const b = ex.querySelector('.rl-lay'); if (b) b.textContent = b.dataset.off; });
+  document.querySelectorAll('.ex.rl').forEach(ex => {
+    const pal = ex.querySelector('.rl-pal'); if (!pal || !window.ResizeObserver) return;
+    new ResizeObserver(() => ex.style.setProperty('--palh', pal.offsetHeight + 'px')).observe(pal);
+  });
 })();
 
 (function () {
